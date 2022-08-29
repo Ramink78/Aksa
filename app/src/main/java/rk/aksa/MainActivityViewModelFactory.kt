@@ -9,7 +9,7 @@ class MainActivityViewModelFactory(private val context: Context) : ViewModelProv
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         return if (modelClass.isAssignableFrom(MainActivityViewModel::class.java)) {
             val imageRepository =
-                ImageRepository(dispatcher = Dispatchers.IO, context.contentResolver)
+                ImageRepository(LocalMediaDataSource(context.contentResolver, Dispatchers.IO))
             MainActivityViewModel(imageRepository) as T
         } else throw IllegalArgumentException("Unknown ViewModel class")
     }
