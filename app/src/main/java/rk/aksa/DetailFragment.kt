@@ -2,22 +2,18 @@ package rk.aksa
 
 import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
+import androidx.core.view.MenuHost
+import androidx.core.view.MenuProvider
 import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
 import androidx.transition.*
 import com.bumptech.glide.Glide
-import com.bumptech.glide.RequestBuilder
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
-import com.google.android.material.transition.MaterialArcMotion
 import com.google.android.material.transition.MaterialContainerTransform
-import com.google.android.material.transition.MaterialFadeThrough
-import com.google.android.material.transition.MaterialSharedAxis
 import rk.aksa.databinding.FragmentDetailBinding
 
 class DetailFragment : Fragment() {
@@ -41,8 +37,9 @@ class DetailFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        postponeEnterTransition()
         val image = requireArguments().getParcelable<Image>(Const.KEY_IMAGE)
+        setupMenu(image?.displayName)
+        postponeEnterTransition()
         ViewCompat.setTransitionName(binding.imgDetail, image?.id)
         Glide.with(requireContext())
             .load(image?.uri)
@@ -78,7 +75,32 @@ class DetailFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+        (requireActivity() as MainActivity).hideUpButton()
     }
+
+    private fun setupMenu(title: String?) {
+        (requireActivity() as MainActivity).apply {
+            showUpButton()
+            setTitle(title)
+        }
+        (requireActivity() as MenuHost)
+            .addMenuProvider(object : MenuProvider {
+                override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                }
+
+                override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                    return when (menuItem.itemId) {
+                        android.R.id.home -> {
+                            (requireActivity() as MainActivity).onBackPressed()
+                            true
+                        }
+                        else -> false
+                    }
+                }
+
+            }, viewLifecycleOwner)
+    }
+
 
     private fun getTransition(): Transition {
         val set = TransitionSet()

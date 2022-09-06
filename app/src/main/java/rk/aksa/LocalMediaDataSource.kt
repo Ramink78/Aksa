@@ -16,7 +16,8 @@ class LocalMediaDataSource(
         val columns = arrayOf(
             MediaStore.Images.ImageColumns._ID,
             MediaStore.Images.ImageColumns.DATE_ADDED,
-            MediaStore.Images.ImageColumns.SIZE
+            MediaStore.Images.ImageColumns.SIZE,
+            MediaStore.Images.ImageColumns.DISPLAY_NAME
         )
         val selection: String? = null
         val sortClause = sortClause(sortOrder)
@@ -58,13 +59,16 @@ class LocalMediaDataSource(
         val idColumnIndex = getColumnIndex(MediaStore.Images.ImageColumns._ID)
         val sizeColumnIndex = getColumnIndex(MediaStore.Images.ImageColumns.SIZE)
         val dateAddedColumnIndex = getColumnIndex(MediaStore.Images.ImageColumns.DATE_ADDED)
+        val displayNameColumnIndex = getColumnIndex(MediaStore.Images.ImageColumns.DISPLAY_NAME)
         val imageId = getString(idColumnIndex)
         val imageSize = getInt(sizeColumnIndex)
         val imageDateAdded = getInt(dateAddedColumnIndex)
+        val imageDisplayName = getString(displayNameColumnIndex)
         return Image(
             id = imageId,
             size = imageSize,
-            dateAdded = imageDateAdded
+            dateAdded = imageDateAdded,
+            displayName = imageDisplayName
         )
     }
 
