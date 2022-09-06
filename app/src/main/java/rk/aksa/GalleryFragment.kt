@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
+import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import androidx.fragment.app.replace
@@ -21,6 +22,11 @@ class GalleryFragment : Fragment(), ImageClickListener {
     private val binding
         get() = _binding!!
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -32,12 +38,13 @@ class GalleryFragment : Fragment(), ImageClickListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        postponeEnterTransition()
         imageAdapter = ImageAdapter()
         binding.recyclerView.apply {
             adapter = imageAdapter
             layoutManager = GridLayoutManager(requireContext(), 4)
+            doOnPreDraw { startPostponedEnterTransition() }
         }
-
         viewModel.images.observe(viewLifecycleOwner) {
             imageAdapter.submitList(it)
         }
@@ -50,16 +57,17 @@ class GalleryFragment : Fragment(), ImageClickListener {
         _binding = null
     }
 
-    private fun navigateToDetail(image: Image) {
+    private fun navigateToDetail(image: Image, view: View) {
         parentFragmentManager.commit {
             setReorderingAllowed(true)
             val extras = bundleOf(Const.KEY_IMAGE to image)
+            addSharedElement(view, view.transitionName)
             replace<DetailFragment>(R.id.fragmentContainerView, args = extras)
             addToBackStack(null)
         }
     }
 
-    override fun onImageClicked(image: Image) {
-        navigateToDetail(image)
+    override fun onImageClicked(view: View, image: Image) {
+        navigateToDetail(image, view)
     }
 }
