@@ -11,7 +11,22 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+    }
 
+    fun showUpButton() {
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+    }
+
+    fun hideUpButton() {
+        supportActionBar?.setDisplayHomeAsUpEnabled(false)
+    }
+
+    override fun onBackPressed() {
+        val fragmentManager = supportFragmentManager
+        if (fragmentManager.backStackEntryCount > 1)
+            fragmentManager.popBackStackImmediate()
+        else
+            super.onBackPressed()
     }
 
 }
