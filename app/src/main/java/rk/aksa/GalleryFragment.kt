@@ -22,11 +22,6 @@ class GalleryFragment : Fragment(), ImageClickListener {
     private val binding
         get() = _binding!!
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -38,6 +33,7 @@ class GalleryFragment : Fragment(), ImageClickListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        requireActivity().title = Const.FRAGMENT_GALLERY_TITLE
         postponeEnterTransition()
         imageAdapter = ImageAdapter()
         binding.recyclerView.apply {
@@ -70,4 +66,5 @@ class GalleryFragment : Fragment(), ImageClickListener {
     override fun onImageClicked(view: View, image: Image) {
         navigateToDetail(image, view)
     }
+
 }
